@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DeltaV OPC UA Write</title>
+</head>
+<body>
+    <h1>Write Float Value to DeltaV OPC UA</h1>
+
+    <p><strong>Current value:</strong> <span id="tag-value">{{ current_value }}</span></p>
+
+    <form action="/write" method="post">
+        <label for="sim_value">SIMULATE.ENABLE (integer):</label>
+        <input type="text" id="sim_value" name="sim_value" required>
+        <button type="submit">Write</button>
+    </form>
+
+    
+    
+    <p>{{ message }}</p>
+
+    <script>
+        function refreshTagValue() {
+            fetch("/read_tag")
+                .then(response => response.json())
+                .then(data => {
+                    const valueElement = document.getElementById("tag-value");
+                    if (data.value !== undefined) {
+                        valueElement.textContent = data.value;
+                    } else if (data.error) {
+                        valueElement.textContent = "Error: " + data.error;
+                    }
+                })
+                .catch(error => {
+                    document.getElementById("tag-value").textContent = "Fetch error";
+                });
+        }
+    
+        setInterval(refreshTagValue, 3000);  // Refresh every 3 seconds
+    </script>
+    
+
+</body>
+</html>
